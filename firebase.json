@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "footballpredictor11",
     "public": "build/web",
     "ignore": [
       "firebase.json",

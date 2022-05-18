@@ -44,6 +44,9 @@ class _MyHomePageState extends State<MyHomePage> {
   String url = '';
   String result = '';
   double acceleration = 0, speed = 0, angle = 0;
+  TextEditingController accelerationController = TextEditingController();
+  TextEditingController speedController = TextEditingController();
+  TextEditingController angleController = TextEditingController();
   getURL() {
     FirebaseFirestore.instance
         .collection("footballPredictor")
@@ -56,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   predict() async {
     print(url);
-    var uri = await Uri.https(url, '/predict_goal', {
+    var uri = Uri.https(url, '/predict_goal', {
       "accelaration": acceleration.toString(),
       'speed': speed.toString(),
       'angle': angle.toString(),
@@ -82,14 +85,14 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              width: 450,
+              width: 500,
               child: ListView(
                 children: [
-                  Center(
+                  const Center(
                       child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 40.0),
+                    padding: EdgeInsets.symmetric(vertical: 40.0),
                     child: Text(
-                      "Football Predictor",
+                      "⚽ Football Predictor",
                       style: TextStyle(color: Colors.white, fontSize: 30),
                     ),
                   )),
@@ -104,11 +107,23 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       SizedBox(
                         child: TextField(
+                          controller: accelerationController,
+                          keyboardType: TextInputType.number,
                           onChanged: (val) {
-                            acceleration = double.parse(val);
+                            double? newVal = double.tryParse(val);
+                            if (newVal == null && val.isNotEmpty) {
+                              accelerationController.text =
+                                  acceleration.toString();
+                              accelerationController.selection =
+                                  TextSelection.fromPosition(TextPosition(
+                                      offset:
+                                          accelerationController.text.length));
+                            } else {
+                              acceleration = double.tryParse(val) ?? 0;
+                            }
                           },
-                          style: TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
                             border: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.white),
                             ),
@@ -119,15 +134,15 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         width: 250,
                       ),
-                      // Text(
-                      //   "m/s",
-                      //   style: TextStyle(color: Colors.white, fontSize: 20),
-                      // ),
+                      Text(
+                        "  m/s\u00B2",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
                     ],
                   ),
                   Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         child: Text(
                           "Speed: ",
                           style: TextStyle(color: Colors.white, fontSize: 20),
@@ -136,11 +151,20 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       SizedBox(
                         child: TextField(
+                          controller: speedController,
                           onChanged: (val) {
-                            speed = double.parse(val);
+                            double? newVal = double.tryParse(val);
+                            if (newVal == null && val.isNotEmpty) {
+                              speedController.text = speed.toString();
+                              speedController.selection =
+                                  TextSelection.fromPosition(TextPosition(
+                                      offset: speedController.text.length));
+                            } else {
+                              speed = double.tryParse(val) ?? 0;
+                            }
                           },
-                          style: TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
                             border: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.white),
                             ),
@@ -151,15 +175,15 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         width: 250,
                       ),
-                      // Text(
-                      //   "m/s",
-                      //   style: TextStyle(color: Colors.white, fontSize: 20),
-                      // ),
+                      Text(
+                        "  m/s",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
                     ],
                   ),
                   Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         child: Text(
                           "Angle: ",
                           style: TextStyle(color: Colors.white, fontSize: 20),
@@ -168,11 +192,20 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       SizedBox(
                         child: TextField(
+                          controller: angleController,
                           onChanged: (val) {
-                            angle = double.parse(val);
+                            double? newVal = double.tryParse(val);
+                            if (newVal == null && val.isNotEmpty) {
+                              angleController.text = angle.toString();
+                              angleController.selection =
+                                  TextSelection.fromPosition(TextPosition(
+                                      offset: angleController.text.length));
+                            } else {
+                              angle = double.tryParse(val) ?? 0;
+                            }
                           },
-                          style: TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
                             border: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.white),
                             ),
@@ -183,23 +216,25 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         width: 250,
                       ),
-                      // Text(
-                      //   "degree",
-                      //   style: TextStyle(color: Colors.white, fontSize: 20),
-                      // ),
+                      Text(
+                        "  degree",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
                     ],
                   ),
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 28.0),
                       child: ElevatedButton(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.green[700]),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(
                               horizontal: 20.0, vertical: 10),
                           child: Text("Predict"),
                         ),
                         onPressed: () {
-                          predict();
+                          //predict();
                         },
                       ),
                     ),
@@ -209,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.symmetric(vertical: 40.0),
                     child: Text(
                       result,
-                      style: TextStyle(color: Colors.white, fontSize: 50),
+                      style: const TextStyle(color: Colors.white, fontSize: 50),
                     ),
                   )),
                 ],
