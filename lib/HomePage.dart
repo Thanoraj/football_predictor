@@ -19,12 +19,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String url = '';
-  String result = '';
+  String result = 'scored';
   double acceleration = 0, speed = 0, angle = 0;
   TextEditingController accelerationController = TextEditingController();
   TextEditingController speedController = TextEditingController();
   TextEditingController angleController = TextEditingController();
-  bool showResults = true;
+  bool showResults = false;
 
   getURL() {
     FirebaseFirestore.instance
@@ -47,7 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
       "Access-Control-Allow-Origin": "*"
     });
     var decodedResponse = await jsonDecode(response.body);
-    result = await decodedResponse;
+    result = decodedResponse;
+    showResults = true;
     setState(() {});
   }
 
@@ -110,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           width: 250,
                         ),
-                        Text(
+                        const Text(
                           "  m/s\u00B2",
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
@@ -151,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           width: 250,
                         ),
-                        Text(
+                        const Text(
                           "  m/s",
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
@@ -192,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           width: 250,
                         ),
-                        Text(
+                        const Text(
                           "  degree",
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
@@ -210,8 +211,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: Text("Predict"),
                           ),
                           onPressed: () {
-                            //predict();
-                            showResults = true;
+                            predict();
+                            //showResults = true;
                             setState(() {});
                           },
                         ),
@@ -243,22 +244,45 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: Colors.grey[700],
                   elevation: 5,
                   borderRadius: BorderRadius.circular(15),
-                  child: Container(
-                    margin: EdgeInsets.all(5),
+                  child: SizedBox(
                     width: 350,
                     height: 250,
-                    decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Center(
-                      child: Text(
-                        result,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold),
+                    child: Stack(children: [
+                      Container(
+                        margin: const EdgeInsets.all(5),
+                        width: 350,
+                        height: 250,
+                        decoration: BoxDecoration(
+                            color: Colors.grey[900],
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Center(
+                          child: Text(
+                            result,
+                            style: TextStyle(
+                                color: result == "Scored"
+                                    ? Colors.green[700]
+                                    : Colors.red,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
                       ),
-                    ),
+                      Row(
+                        children: [
+                          Spacer(),
+                          IconButton(
+                              alignment: Alignment.topRight,
+                              onPressed: () {
+                                showResults = false;
+                                setState(() {});
+                              },
+                              icon: Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              )),
+                        ],
+                      ),
+                    ]),
                   ),
                 ),
               ),
